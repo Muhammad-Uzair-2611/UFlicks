@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MovieCard from "./Components/MovieCard";
 import { FaChevronLeft } from "react-icons/fa";
 import { getMovies, getTrendingMovies } from "./services/movie_api";
 
 function App() {
-  //*States
+  //*States & Ref
   const [trendng_Movies, set_Trendng_Movies] = useState([]);
+  const trending_Movie_crousel = useRef(null);
+
+  //*Variables
+  let scroll_Interval;
 
   //*Effects
   useEffect(() => {
@@ -17,24 +21,42 @@ function App() {
   }, []);
 
   //*Functions
-  const handleclick = async () => {};
+  const handleclick = async (direction) => {
+    if (direction === "right") {
+      trending_Movie_crousel.current.scrollLeft -= 200;
+    } else if (direction === "left") {
+      trending_Movie_crousel.current.scrollLeft += 200;
+    }
+  };
 
   return (
     <div className="">
       <div className="mt-5 flex gap-x-20">
         <h1 className="text-4xl font-bold px-4">Trending</h1>
-        <button onClick={handleclick} className="p-2 bg-amber-600">
-          click me{" "}
-        </button>
       </div>
-      <div className="px-4 mt-10 items-center mb-10 ">
-        <div className="flex gap-x-6 relative">
-          <span className="absolute text-4xl bottom-[59%] -left-4">
+      <div className="px-4 mt-10 items-center mb-10 relative">
+        <div className="flex justify-start gap-x-4 items-center relative z-10 w-245 bottom-[63%] cursor-pointer">
+          <button
+            onClick={() => handleclick("right")}
+            className="text-[40px] cursor-pointer"
+          >
             <FaChevronLeft />
-          </span>
+          </button>
+
+          <button
+            onClick={() => handleclick("left")}
+            className="text-[40px] rotate-z-180 cursor-pointer"
+          >
+            <FaChevronLeft />
+          </button>
+        </div>
+        <div
+          ref={trending_Movie_crousel}
+          className="flex gap-x-7 overflow-x-scroll py-4 scrollbar-hide transition-all scroll-smooth"
+        >
           {trendng_Movies.map((movie) => {
             return (
-              <div key={movie.id}>
+              <div key={movie.id} className="">
                 <MovieCard poster={movie.poster} title={movie.title} />
               </div>
             );
