@@ -3,6 +3,8 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = `https://api.themoviedb.org/3/`;
 const search_URL = `search/movie?api_key=${API_KEY}&language=en-US&query=`;
 const trending_URL = `trending/movie/day?api_key=${API_KEY}&language=en-US`;
+const nowPlaying_URL = `movie/now_playing?api_key=${API_KEY}`;
+const popularShow_URL = `tv/popular?api_key=${API_KEY}`;
 
 export const getMovies = async (title) => {
   const fetch = await axios.get(`${BASE_URL}${search_URL}${title}`);
@@ -24,4 +26,33 @@ export const getTrendingMovies = async () => {
     };
   });
   return trendingMovies;
+};
+export const getTNowPlayingMovies = async () => {
+  const fetch = await axios.get(`${BASE_URL}${nowPlaying_URL}`);
+  let response = fetch.data.results;
+
+  const nowPlayingMovies = response.map((movie) => {
+    return {
+      id: movie.id,
+      title: movie.title,
+      media_type: movie.media_type,
+      release_date: movie.release_date,
+      poster: movie.poster_path,
+    };
+  });
+  return nowPlayingMovies;
+};
+export const getPopularShow = async () => {
+  const fetch = await axios.get(`${BASE_URL}${popularShow_URL}`);
+  let response = fetch.data.results;
+
+  const popularShow = response.map((movie) => {
+    return {
+      id: movie.id,
+      title: movie.name,
+      release_date: movie.first_air_date,
+      poster: movie.poster_path,
+    };
+  });
+  return popularShow;
 };
